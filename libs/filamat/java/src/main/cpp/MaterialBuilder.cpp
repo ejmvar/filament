@@ -25,14 +25,12 @@ using namespace filamat;
 extern "C" JNIEXPORT jlong JNICALL
 Java_com_google_android_filament_filamat_MaterialBuilder_nCreateMaterialBuilder(JNIEnv *env,
         jclass type) {
-    std::cout << "Creating a material builder\n";
     return (jlong) new MaterialBuilder();
 }
 
 extern "C" JNIEXPORT void JNICALL
 Java_com_google_android_filament_filamat_MaterialBuilder_nDestroyMaterialBuilder(JNIEnv *env,
         jclass type, jlong nativeBuilder) {
-    std::cout << "Destroying the material builder\n";
     auto builder = (MaterialBuilder*) nativeBuilder;
     delete builder;
 }
@@ -40,7 +38,6 @@ Java_com_google_android_filament_filamat_MaterialBuilder_nDestroyMaterialBuilder
 extern "C" JNIEXPORT jlong JNICALL
 Java_com_google_android_filament_filamat_MaterialBuilder_nBuilderBuild(JNIEnv* env, jclass type,
         jlong nativeBuilder) {
-    std::cout << "Build!";
     auto builder = (MaterialBuilder*) nativeBuilder;
     return (jlong) new Package(builder->build());
 }
