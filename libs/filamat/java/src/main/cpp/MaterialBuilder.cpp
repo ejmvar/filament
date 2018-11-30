@@ -18,8 +18,11 @@
 
 #include <filamat/MaterialBuilder.h>
 
+#include <filament/EngineEnums.h>
+
 #include <iostream>
 
+using namespace filament;
 using namespace filamat;
 
 extern "C" JNIEXPORT jlong JNICALL
@@ -73,6 +76,13 @@ Java_com_google_android_filament_filamat_MaterialBuilder_nMaterialBuilderName(JN
     auto builder = (MaterialBuilder*) nativeBuilder;
     const char* name = env->GetStringUTFChars(name_, nullptr);
     builder->name(name);
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_google_android_filament_filamat_MaterialBuilder_nMaterialBuilderRequire(JNIEnv* env,
+        jclass type, jlong nativeBuilder, jint attribute) {
+    auto builder = (MaterialBuilder*) nativeBuilder;
+    builder->require((VertexAttribute) attribute);
 }
 
 extern "C" JNIEXPORT void JNICALL

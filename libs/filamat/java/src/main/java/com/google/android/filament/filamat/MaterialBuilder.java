@@ -25,6 +25,16 @@ public class MaterialBuilder {
     private final BuilderFinalizer mFinalizer;
     private final long mNativeObject;
 
+    public enum VertexAttribute {
+        POSITION, // XYZ position (float3)
+        TANGENTS, // tangent, bitangent and normal, encoded as a quaternion (4 floats or half floats)
+        COLOR, // vertex color (float4)
+        UV0, // texture coordinates (float2)
+        UV1, // texture coordinates (float2)
+        BONE_INDICES, // indices of 4 bones (uvec4)
+        BONE_WEIGHTS    // weights of the 4 bones (normalized float4)
+    }
+
     public MaterialBuilder() {
         mNativeObject = nCreateMaterialBuilder();
         mFinalizer = new BuilderFinalizer(mNativeObject);
@@ -33,6 +43,12 @@ public class MaterialBuilder {
     @NonNull
     public MaterialBuilder name(@NonNull String name) {
         nMaterialBuilderName(mNativeObject, name);
+        return this;
+    }
+
+    @NonNull
+    public MaterialBuilder require(@NonNull VertexAttribute attribute) {
+        nMaterialBuilderRequire(mNativeObject, attribute.ordinal());
         return this;
     }
 
@@ -93,6 +109,7 @@ public class MaterialBuilder {
     private static native void nDestroyPackage(long nativePackage);
 
     private static native void nMaterialBuilderName(long nativeBuilder, String name);
+    private static native void nMaterialBuilderRequire(long nativeBuilder, int attribute);
     private static native void nMaterialBuilderMaterial(long nativeBuilder, String code);
     private static native void nMaterialBuilderMaterialVertex(long nativeBuilder, String code);
     private static native void nMaterialBuilderColorWrite(long nativeBuilder, boolean enable);
