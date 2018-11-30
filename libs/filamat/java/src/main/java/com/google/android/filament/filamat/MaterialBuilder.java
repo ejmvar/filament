@@ -29,11 +29,10 @@ public class MaterialBuilder {
         mFinalizer = new BuilderFinalizer(mNativeObject);
     }
 
-    long getmNativeObject() {
-        if (mNativeObject == 0) {
-            throw new IllegalStateException("Calling method on destroyed MaterialBuilder");
-        }
-        return mNativeObject;
+    @NonNull
+    public MaterialBuilder name(@NonNull String name) {
+        nMaterialBuilderName(mNativeObject, name);
+        return this;
     }
 
     @NonNull
@@ -73,5 +72,7 @@ public class MaterialBuilder {
     private static native byte[] nGetPackageBytes(long nativePackage);
     private static native boolean nGetPackageIsValid(long nativePackage);
     private static native void nDestroyPackage(long nativePackage);
+
+    private static native void nMaterialBuilderName(long nativeMaterialBuilder, String name);
 }
 

@@ -69,3 +69,11 @@ Java_com_google_android_filament_filamat_MaterialBuilder_nDestroyPackage(JNIEnv*
     Package* package = (Package*) nativePackage;
     delete package;
 }
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_google_android_filament_filamat_MaterialBuilder_nMaterialBuilderName(JNIEnv* env,
+        jclass type, jlong nativeBuilder, jstring name_) {
+    auto builder = (MaterialBuilder*) nativeBuilder;
+    const char* name = env->GetStringUTFChars(name_, nullptr);
+    builder->name(name);
+}
