@@ -74,3 +74,27 @@ Java_com_google_android_filament_filamat_MaterialBuilder_nMaterialBuilderName(JN
     const char* name = env->GetStringUTFChars(name_, nullptr);
     builder->name(name);
 }
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_google_android_filament_filamat_MaterialBuilder_nMaterialBuilderMaterial(JNIEnv* env,
+        jclass type, jlong nativeBuilder, jstring code_) {
+    auto builder = (MaterialBuilder*) nativeBuilder;
+    const char* code = env->GetStringUTFChars(code_, nullptr);
+    builder->material(code);
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_google_android_filament_filamat_MaterialBuilder_nMaterialBuilderMaterialVertex(JNIEnv* env,
+        jclass type, jlong nativeBuilder, jstring code_) {
+    auto builder = (MaterialBuilder*) nativeBuilder;
+    const char* code = env->GetStringUTFChars(code_, nullptr);
+    builder->materialVertex(code);
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_google_android_filament_filamat_MaterialBuilder_nMaterialBuilderColorWrite(JNIEnv* env,
+        jclass type, jlong nativeBuilder, jboolean enable) {
+    auto builder = (MaterialBuilder*) nativeBuilder;
+    builder->colorWrite(enable);
+}
+

@@ -20,7 +20,8 @@ import android.support.annotation.NonNull;
 import java.nio.ByteBuffer;
 
 public class MaterialBuilder {
-
+    @SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration"})
+    // Keep to finalize native resources
     private final BuilderFinalizer mFinalizer;
     private final long mNativeObject;
 
@@ -32,6 +33,24 @@ public class MaterialBuilder {
     @NonNull
     public MaterialBuilder name(@NonNull String name) {
         nMaterialBuilderName(mNativeObject, name);
+        return this;
+    }
+
+    @NonNull
+    public MaterialBuilder material(@NonNull String code) {
+        nMaterialBuilderMaterial(mNativeObject, code);
+        return this;
+    }
+
+    @NonNull
+    public MaterialBuilder materialVertex(@NonNull String code) {
+        nMaterialBuilderMaterialVertex(mNativeObject, code);
+        return this;
+    }
+
+    @NonNull
+    public MaterialBuilder colorWrite(boolean enable) {
+        nMaterialBuilderColorWrite(mNativeObject, enable);
         return this;
     }
 
@@ -68,11 +87,13 @@ public class MaterialBuilder {
     private static native long nCreateMaterialBuilder();
     private static native void nDestroyMaterialBuilder(long nativeBuilder);
 
-    private static native long nBuilderBuild(long nativeMaterialBuilder);
+    private static native long nBuilderBuild(long nativeBuilder);
     private static native byte[] nGetPackageBytes(long nativePackage);
     private static native boolean nGetPackageIsValid(long nativePackage);
     private static native void nDestroyPackage(long nativePackage);
 
-    private static native void nMaterialBuilderName(long nativeMaterialBuilder, String name);
+    private static native void nMaterialBuilderName(long nativeBuilder, String name);
+    private static native void nMaterialBuilderMaterial(long nativeBuilder, String code);
+    private static native void nMaterialBuilderMaterialVertex(long nativeBuilder, String code);
+    private static native void nMaterialBuilderColorWrite(long nativeBuilder, boolean enable);
 }
-
