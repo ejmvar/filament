@@ -79,6 +79,13 @@ Java_com_google_android_filament_filamat_MaterialBuilder_nMaterialBuilderName(JN
 }
 
 extern "C" JNIEXPORT void JNICALL
+Java_com_google_android_filament_filamat_MaterialBuilder_nMaterialBuilderShading(JNIEnv* env,
+        jclass type, jlong nativeBuilder, jint shading) {
+    auto builder = (MaterialBuilder*) nativeBuilder;
+    builder->shading((Shading) shading);
+}
+
+extern "C" JNIEXPORT void JNICALL
 Java_com_google_android_filament_filamat_MaterialBuilder_nMaterialBuilderRequire(JNIEnv* env,
         jclass type, jlong nativeBuilder, jint attribute) {
     auto builder = (MaterialBuilder*) nativeBuilder;
