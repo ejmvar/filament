@@ -37,7 +37,17 @@ add_library(${TARGET} SHARED ${JNI_SOURCE_FILES})
 
 target_include_directories(${TARGET} PRIVATE ${JNI_INCLUDE_DIRS})
 
-set_property(TARGET ${TARGET} PROPERTY CXX_STANDARD 14)
+# set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fvisibility=hidden")
+
+# Wl,--version-script=${CMAKE_CURRENT_SOURCE_DIR}/libfilamat-jni.map
+
+# -exported_symbols_list ${CMAKE_CURRENT_SOURCE_DIR}/libfilamat-jni.symbols
+set(EXPORTED_SYMBOLS)
+
+set_target_properties(${TARGET} PROPERTIES
+        CXX_STANDARD 14
+        COMPILE_FLAGS "-fno-exceptions -fvisibility=hidden"
+        LINK_FLAGS "${GC_SECTIONS} ${EXPORTED_SYMBOLS}")
 
 target_link_libraries(${TARGET} filamat)
 
