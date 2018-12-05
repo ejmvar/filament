@@ -12,11 +12,12 @@ if (NOT Java_FOUND)
     return()
 endif()
 
-find_package(JNI)
-if (NOT JNI_FOUND)
-    message(WARNING "JNI not found, skipping Java projects")
-    return()
-endif()
+# TODO: why does this need to be disabled for Android?
+# find_package(JNI)
+# if (NOT JNI_FOUND)
+#     message(WARNING "JNI not found, skipping Java projects")
+#     return()
+# endif()
 
 # todo: why does JAVA_HOME have to be set?
 if (NOT DEFINED ENV{JAVA_HOME})
@@ -43,7 +44,7 @@ set(EXPORTED_SYMBOLS)
 if (APPLE)
     set(EXPORTED_SYMBOLS "-exported_symbols_list ${CMAKE_CURRENT_SOURCE_DIR}/libfilamat-jni.symbols")
 elseif (ANDROID)
-    set(EXPORTED_SYMBOLS "Wl,--version-script=${CMAKE_CURRENT_SOURCE_DIR}/libfilamat-jni.map")
+    set(EXPORTED_SYMBOLS "-Wl,--version-script=${CMAKE_CURRENT_SOURCE_DIR}/libfilamat-jni.map")
 endif()
 
 set_target_properties(${TARGET} PROPERTIES
