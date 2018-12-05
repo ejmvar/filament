@@ -39,10 +39,12 @@ target_include_directories(${TARGET} PRIVATE ${JNI_INCLUDE_DIRS})
 
 # set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fvisibility=hidden")
 
-# Wl,--version-script=${CMAKE_CURRENT_SOURCE_DIR}/libfilamat-jni.map
-
-# -exported_symbols_list ${CMAKE_CURRENT_SOURCE_DIR}/libfilamat-jni.symbols
 set(EXPORTED_SYMBOLS)
+if (APPLE)
+    set(EXPORTED_SYMBOLS "-exported_symbols_list ${CMAKE_CURRENT_SOURCE_DIR}/libfilamat-jni.symbols")
+elseif (ANDROID)
+    set(EXPORTED_SYMBOLS "Wl,--version-script=${CMAKE_CURRENT_SOURCE_DIR}/libfilamat-jni.map")
+endif()
 
 set_target_properties(${TARGET} PROPERTIES
         CXX_STANDARD 14
