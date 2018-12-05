@@ -48,8 +48,10 @@ private:
     void preprocessOptimization(glslang::TShader& tShader,
             const filament::driver::ShaderModel shaderModel) const;
 
+    /*
     void registerSizePasses(spvtools::Optimizer& optimizer) const;
     void registerPerformancePasses(spvtools::Optimizer& optimizer) const;
+    */
 
     const filamat::MaterialBuilder::Optimization mOptimization;
     const bool mPrintShaders;
