@@ -26,6 +26,63 @@ if (NOT DEFINED ENV{JAVA_HOME})
     return()
 endif()
 
+set(FILAMENT_DIR ${FILAMENT_DIST_DIR})
+if (FILAMENT_DIR)
+    add_library(filamat STATIC IMPORTED)
+    set_target_properties(filamat PROPERTIES IMPORTED_LOCATION
+            ${FILAMENT_DIR}/lib/${ANDROID_ABI}/libfilamat.a)
+
+    add_library(utils STATIC IMPORTED)
+    set_target_properties(utils PROPERTIES IMPORTED_LOCATION
+            ${FILAMENT_DIR}/lib/${ANDROID_ABI}/libutils.a)
+
+    add_library(filabridge STATIC IMPORTED)
+    set_target_properties(filabridge PROPERTIES IMPORTED_LOCATION
+            ${FILAMENT_DIR}/lib/${ANDROID_ABI}/libfilabridge.a)
+
+    add_library(smol-v STATIC IMPORTED)
+    set_target_properties(smol-v PROPERTIES IMPORTED_LOCATION
+            ${FILAMENT_DIR}/lib/${ANDROID_ABI}/libsmol-v.a)
+
+    add_library(glslang STATIC IMPORTED)
+    set_target_properties(glslang PROPERTIES IMPORTED_LOCATION
+            ${FILAMENT_DIR}/lib/${ANDROID_ABI}/libglslang.a)
+
+    add_library(SPIRV-Tools-opt STATIC IMPORTED)
+    set_target_properties(SPIRV-Tools-opt PROPERTIES IMPORTED_LOCATION
+            ${FILAMENT_DIR}/lib/${ANDROID_ABI}/libSPIRV-Tools-opt.a)
+
+    add_library(spirv-cross-glsl STATIC IMPORTED)
+    set_target_properties(spirv-cross-glsl PROPERTIES IMPORTED_LOCATION
+            ${FILAMENT_DIR}/lib/${ANDROID_ABI}/libspirv-cross-glsl.a)
+
+    add_library(spirv-cross-core STATIC IMPORTED)
+    set_target_properties(spirv-cross-core PROPERTIES IMPORTED_LOCATION
+            ${FILAMENT_DIR}/lib/${ANDROID_ABI}/libspirv-cross-core.a)
+
+    add_library(SPIRV STATIC IMPORTED)
+    set_target_properties(SPIRV PROPERTIES IMPORTED_LOCATION
+            ${FILAMENT_DIR}/lib/${ANDROID_ABI}/libSPIRV.a)
+
+    add_library(SPVRemapper STATIC IMPORTED)
+    set_target_properties(SPVRemapper PROPERTIES IMPORTED_LOCATION
+            ${FILAMENT_DIR}/lib/${ANDROID_ABI}/libSPVRemapper.a)
+
+    add_library(OSDependent STATIC IMPORTED)
+    set_target_properties(OSDependent PROPERTIES IMPORTED_LOCATION
+            ${FILAMENT_DIR}/lib/${ANDROID_ABI}/libOSDependent.a)
+
+    add_library(OGLCompiler STATIC IMPORTED)
+    set_target_properties(OGLCompiler PROPERTIES IMPORTED_LOCATION
+            ${FILAMENT_DIR}/lib/${ANDROID_ABI}/libOGLCompiler.a)
+
+    add_library(shaders STATIC IMPORTED)
+    set_target_properties(shaders PROPERTIES IMPORTED_LOCATION
+            ${FILAMENT_DIR}/lib/${ANDROID_ABI}/libshaders.a)
+
+    include_directories(${FILAMENT_DIR}/include)
+endif()
+
 # ==================================================================================================
 # JNI bindings
 # ==================================================================================================
@@ -52,7 +109,7 @@ set_target_properties(${TARGET} PROPERTIES
         COMPILE_FLAGS "-fno-exceptions -fvisibility=hidden"
         LINK_FLAGS "${GC_SECTIONS} ${EXPORTED_SYMBOLS}")
 
-target_link_libraries(${TARGET} filamat)
+target_link_libraries(${TARGET} filamat SPIRV SPVRemapper SPIRV-Tools-opt spirv-cross-core spirv-cross-glsl glslang utils filabridge smol-v OSDependent OGLCompiler log shaders)
 
 # ==================================================================================================
 # Java APIs

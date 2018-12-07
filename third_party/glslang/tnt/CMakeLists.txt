@@ -61,3 +61,4 @@ endfunction(glslang_set_link_args)
 add_subdirectory(../glslang/tnt "${CMAKE_CURRENT_BINARY_DIR}/glslang")
 add_subdirectory(../OGLCompilersDLL/tnt "${CMAKE_CURRENT_BINARY_DIR}/OGLCompilersDLL")
 add_subdirectory(../SPIRV/tnt "${CMAKE_CURRENT_BINARY_DIR}/SPIRV")
+

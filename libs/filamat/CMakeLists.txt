@@ -92,10 +92,8 @@ target_compile_options(${TARGET} PRIVATE
 # ==================================================================================================
 # Installation
 # ==================================================================================================
-# Currently disabled because we don't need it
-# To properly support Vulkan, filamat needs to support SPIR-V compilation
-# install(DIRECTORY ${PUBLIC_HDR_DIR}/filamat DESTINATION include)
-# install(TARGETS ${TARGET} ARCHIVE DESTINATION lib/${DIST_DIR})
+install(DIRECTORY ${PUBLIC_HDR_DIR}/filamat DESTINATION include)
+install(TARGETS ${TARGET} ARCHIVE DESTINATION lib/${DIST_DIR})
 
 # ==================================================================================================
 # Tests

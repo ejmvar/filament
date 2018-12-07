@@ -114,3 +114,5 @@ if(ENABLE_GLSLANG_INSTALL)
         install(FILES ${file} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/glslang/${dir})
     endforeach()
 endif(ENABLE_GLSLANG_INSTALL)
+
+install(TARGETS glslang ARCHIVE DESTINATION lib/${DIST_DIR})
