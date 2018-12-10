@@ -81,14 +81,14 @@ Filament.CompressedPixelBuffer = function(typedarray, cdatatype, faceSize) {
 
 Filament._loadFilamesh = function(engine, buffer, definstance, matinstances) {
     matinstances = matinstances || {};
-    const registry = new Filament.MeshIO$MaterialRegistry();
+    const registry = new Filament.MeshReader$MaterialRegistry();
     for (var key in matinstances) {
         registry.set(key, matinstances[key]);
     }
     if (definstance) {
         registry.set("DefaultMaterial", definstance);
     }
-    const mesh = Filament.MeshIO.loadMeshFromBuffer(engine, buffer, registry);
+    const mesh = Filament.MeshReader.loadMeshFromBuffer(engine, buffer, registry);
     const keys = registry.keys();
     for (var i = 0; i < keys.size(); i++) {
         const key = keys.get(i);
@@ -291,6 +291,44 @@ Filament._createTextureFromPng = function(pngdata, engine, options) {
         .build(engine);
 
     const pixelbuffer = Filament.PixelBuffer(decodedpng.data.getBytes(), pbformat, pbtype);
+    tex.setImage(engine, 0, pixelbuffer);
+    if (!nomips) {
+        tex.generateMipmaps(engine);
+    }
+    return tex;
+};
+
+Filament._createTextureFromJpeg = function(image, engine, options) {
+
+    options = options || {};
+    const srgb = !!options['srgb'];
+    const nomips = !!options['nomips'];
+
+    var context2d = document.createElement('canvas').getContext('2d');
+    context2d.canvas.width = image.width;
+    context2d.canvas.height = image.height;
+    context2d.width = image.width;
+    context2d.height = image.height;
+    context2d.globalCompositeOperation = 'copy';
+    context2d.drawImage(image, 0, 0);
+
+    var imgdata = context2d.getImageData(0, 0, image.width, image.height).data.buffer;
+    var decodedjpeg = new Uint8Array(imgdata);
+
+    const TF = Filament.Texture$InternalFormat;
+    const texformat = srgb ? TF.SRGB8_A8 : TF.RGBA8;
+    const pbformat = Filament.PixelDataFormat.RGBA;
+    const pbtype = Filament.PixelDataType.UBYTE;
+
+    const tex = Filament.Texture.Builder()
+        .width(image.width)
+        .height(image.height)
+        .levels(nomips ? 1 : 0xff)
+        .sampler(Filament.Texture$Sampler.SAMPLER_2D)
+        .format(texformat)
+        .build(engine);
+
+    const pixelbuffer = Filament.PixelBuffer(decodedjpeg, pbformat, pbtype);
     tex.setImage(engine, 0, pixelbuffer);
     if (!nomips) {
         tex.generateMipmaps(engine);

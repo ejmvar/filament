@@ -25,6 +25,7 @@
 #include <math/quat.h>
 #include <math/vec3.h>
 
+#include <utils/algorithm.h>
 #include <utils/Path.h>
 
 #include <filameshio/filamesh.h>
@@ -45,15 +46,11 @@ using Assimp::Importer;
 // configuration
 bool g_interleaved = false;
 bool g_snormUVs = false;
+bool g_compression = false;
 
 Mesh g_mesh;
 float2 g_minUV = float2(std::numeric_limits<float>::max());
-float2 g_maxUV = float2(-std::numeric_limits<float>::max());
-
-template <class Dest, class Source>
-inline Dest bit_cast(const Source& source) {
-    return *reinterpret_cast<const Dest*>(&source);
-}
+float2 g_maxUV = float2(std::numeric_limits<float>::lowest());
 
 template<bool SNORMUVS>
 static ushort2 convertUV(float2 uv) {
@@ -202,7 +199,7 @@ void processNode(const aiScene* scene, const aiNode* node, std::vector<Part>& me
         }
     }
 
-    for (size_t i=0 ; i<node->mNumChildren ; ++i) {
+    for (size_t i = 0 ; i < node->mNumChildren ; ++i) {
         processNode<INTERLEAVED, SNORMUVS>(scene, node->mChildren[i], meshes);
     }
 }
@@ -226,6 +223,8 @@ static void printUsage(const char* name) {
                     "       Print copyright and license information\n\n"
                     "   --interleaved, -i\n"
                     "       interleaves mesh attributes\n\n"
+                    "   --compress, -c\n"
+                    "       enable compression\n\n"
     );
 
     const std::string from("FILAMESH");
@@ -242,11 +241,12 @@ static void license() {
 }
 
 static int handleArguments(int argc, char* argv[]) {
-    static constexpr const char* OPTSTR = "hil";
+    static constexpr const char* OPTSTR = "hilc";
     static const struct option OPTIONS[] = {
             { "help",        no_argument, 0, 'h' },
             { "license",     no_argument, 0, 'l' },
             { "interleaved", no_argument, 0, 'i' },
+            { "compress",    no_argument, 0, 'c' },
             { 0, 0, 0, 0 }  // termination of the option list
     };
 
@@ -267,6 +267,9 @@ static int handleArguments(int argc, char* argv[]) {
                 // break;
             case 'i':
                 g_interleaved = true;
+                break;
+            case 'c':
+                g_compression = true;
                 break;
         }
     }
@@ -319,8 +322,8 @@ int main(int argc, char* argv[]) {
 
     // Check for acceptable assimp data and determine UV bounds.
     preprocessNode(scene, node);
-    g_snormUVs = g_minUV.x >= 0.0f && g_minUV.x <= 1.0f && g_maxUV.x >= 0.0f && g_maxUV.x <= 1.0f &&
-                 g_minUV.y >= 0.0f && g_minUV.y <= 1.0f && g_maxUV.y >= 0.0f && g_maxUV.y <= 1.0f;
+    g_snormUVs = g_minUV.x >= -1.0f && g_minUV.x <= 1.0f && g_maxUV.x >= -1.0f && g_maxUV.x <= 1.0f &&
+                 g_minUV.y >= -1.0f && g_minUV.y <= 1.0f && g_maxUV.y >= -1.0f && g_maxUV.y <= 1.0f;
 
     // Consume assimp data and produce filamesh data.
     if (g_interleaved) {
@@ -365,7 +368,17 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    MeshWriter(g_interleaved, g_snormUVs).serialize(out, g_mesh);
+    uint32_t flags = 0;
+    if (g_interleaved) {
+        flags |= filamesh::INTERLEAVED;
+    }
+    if (g_snormUVs) {
+        flags |= filamesh::TEXCOORD_SNORM16;
+    }
+    if (g_compression) {
+        flags |= filamesh::COMPRESSION;
+    }
+    MeshWriter(flags).serialize(out, g_mesh);
 
     out.flush();
     out.close();

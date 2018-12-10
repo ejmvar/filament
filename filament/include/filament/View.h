@@ -444,13 +444,34 @@ public:
     //! Returns true if post-processing is enabled. See setPostProcessingEnabled() for more info.
     bool isPostProcessingEnabled() const noexcept;
 
+    /**
+     * Inverts the winding order of front faces. By default front faces use a counter-clockwise
+     * winding order. When the winding order is inverted, front faces are faces with a clockwise
+     * winding order.
+     *
+     * Changing the winding order will directly affect the culling mode in materials
+     * (see Material::getCullingMode()).
+     *
+     * Inverting the winding order of front faces is useful when rendering mirrored reflections
+     * (water, mirror surfaces, front camera in AR, etc.).
+     *
+     * @param inverted True to invert front faces, false otherwise.
+     */
+    void setFrontFaceWindingInverted(bool inverted) noexcept;
+
+    /**
+     * Returns true if the winding order of front faces is inverted.
+     * See setFrontFaceWindingInverted() for more information.
+     */
+    bool isFrontFaceWindingInverted() const noexcept;
+
     // for debugging...
 
-    //! debugging: allows to entirely disable culling. (culling enabled by default).
-    void setCulling(bool culling) noexcept;
+    //! debugging: allows to entirely disable frustum culling. (culling enabled by default).
+    void setFrustumCullingEnabled(bool culling) noexcept;
 
-    //! debugging: returns whether culling is enabled.
-    bool isCullingEnabled() const noexcept;
+    //! debugging: returns whether frustum culling is enabled.
+    bool isFrustumCullingEnabled() const noexcept;
 
     //! debugging: sets the Camera used for rendering. It may be different from the culling camera.
     void setDebugCamera(Camera* camera) noexcept;
