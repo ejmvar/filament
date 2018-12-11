@@ -43,6 +43,12 @@ public class MaterialBuilder {
         CLOTH,                  // cloth lighting model
     }
 
+    public enum Platform {
+        DESKTOP,
+        MOBILE,
+        ALL
+    }
+
     public MaterialBuilder() {
         mNativeObject = nCreateMaterialBuilder();
         mFinalizer = new BuilderFinalizer(mNativeObject);
@@ -81,6 +87,12 @@ public class MaterialBuilder {
     @NonNull
     public MaterialBuilder colorWrite(boolean enable) {
         nMaterialBuilderColorWrite(mNativeObject, enable);
+        return this;
+    }
+
+    @NonNull
+    public MaterialBuilder platform(@NonNull Platform platform) {
+        nMaterialBuilderPlatform(mNativeObject, platform.ordinal());
         return this;
     }
 
@@ -128,4 +140,5 @@ public class MaterialBuilder {
     private static native void nMaterialBuilderMaterial(long nativeBuilder, String code);
     private static native void nMaterialBuilderMaterialVertex(long nativeBuilder, String code);
     private static native void nMaterialBuilderColorWrite(long nativeBuilder, boolean enable);
+    private static native void nMaterialBuilderPlatform(long nativeBuilder, int platform);
 }

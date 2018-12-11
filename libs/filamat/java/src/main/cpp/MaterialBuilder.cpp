@@ -115,3 +115,9 @@ Java_com_google_android_filament_filamat_MaterialBuilder_nMaterialBuilderColorWr
     builder->colorWrite(enable);
 }
 
+extern "C" JNIEXPORT void JNICALL
+Java_com_google_android_filament_filamat_MaterialBuilder_nMaterialBuilderPlatform(JNIEnv* env,
+        jclass type, jlong nativeBuilder, jint platform) {
+    auto builder = (MaterialBuilder*) nativeBuilder;
+    builder->platform((MaterialBuilder::Platform) platform);
+}
