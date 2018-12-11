@@ -29,16 +29,21 @@ import com.google.android.filament.*
 import com.google.android.filament.RenderableManager.*
 import com.google.android.filament.VertexBuffer.*
 import com.google.android.filament.android.UiHelper
+import com.google.android.filament.filamat.MaterialBuilder
 
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.channels.Channels
+import com.google.android.filament.filamat.MaterialPackage
+
+
 
 class MainActivity : Activity() {
     // Make sure to initialize Filament first
     // This loads the JNI library needed by most API calls
     companion object {
         init {
+            System.loadLibrary("filamat-jni");
             Filament.init()
         }
     }
@@ -182,9 +187,18 @@ class MainActivity : Activity() {
     }
 
     private fun loadMaterial() {
-        readUncompressedAsset("materials/lit.filamat").let {
-            material = Material.Builder().payload(it, it.remaining()).build(engine)
-        }
+        val mat = MaterialBuilder()
+                .shading(MaterialBuilder.Shading.LIT)
+                .material("""
+                    void material(inout MaterialInputs material) {
+                        prepareMaterial(material);
+                        material.baseColor = float4(1.0, 0.0, 0.0, 1.0);
+                        material.roughness = 0.0;
+                    }
+                """.trimIndent())
+                .platform(MaterialBuilder.Platform.MOBILE)
+                .build()
+        material = Material.Builder().payload(mat.buffer, mat.buffer.remaining()).build(engine)
     }
 
     private fun setupMaterial() {

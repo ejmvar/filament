@@ -77,4 +77,6 @@ dependencies {
 
     // Depend on Filament
     implementation 'com.google.android.filament:filament-android'
+
+    implementation compile(name: 'filamat', ext: 'aar')
 }
