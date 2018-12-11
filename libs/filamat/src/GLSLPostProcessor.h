@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+/*
+
 #ifndef TNT_GLSLPOSTPROCESSOR_H
 #define TNT_GLSLPOSTPROCESSOR_H
 
@@ -24,7 +26,7 @@
 
 #include "filamat/MaterialBuilder.h"    // for MaterialBuilder:: enums
 
-#include <ShaderLang.h>
+// #include <ShaderLang.h>
 
 #include <spirv-tools/optimizer.hpp>
 
@@ -48,10 +50,8 @@ private:
     void preprocessOptimization(glslang::TShader& tShader,
             filament::driver::ShaderModel shaderModel) const;
 
-    /*
     void registerSizePasses(spvtools::Optimizer& optimizer) const;
     void registerPerformancePasses(spvtools::Optimizer& optimizer) const;
-    */
 
     const filamat::MaterialBuilder::Optimization mOptimization;
     const bool mPrintShaders;
@@ -64,3 +64,5 @@ private:
 } // namespace filamat
 
 #endif //TNT_GLSLPOSTPROCESSOR_H
+
+*/

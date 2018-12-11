@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+/*
+
 #include "GLSLPostProcessor.h"
 
 #include <sstream>
@@ -92,12 +94,6 @@ static std::string stringifySpvOptimizerMessage(spv_message_level_t level, const
     return oss.str();
 }
 
-/**
- * Shrinks the specified string and returns a new string as the result.
- * To shrink the string, this method performs the following transforms:
- * - Remove leading white spaces at the beginning of each line
- * - Remove empty lines
- */
 static std::string shrinkString(const std::string& s) {
     size_t cur = 0;
 
@@ -253,14 +249,12 @@ void GLSLPostProcessor::fullOptimization(const TShader& tShader,
     GlslangToSpv(*tShader.getIntermediate(), spirv);
 
     // Run the SPIR-V optimizer
-    /*
     Optimizer optimizer(SPV_ENV_UNIVERSAL_1_3);
     optimizer.SetMessageConsumer([](spv_message_level_t level,
             const char* source, const spv_position_t& position, const char* message) {
         utils::slog.e << stringifySpvOptimizerMessage(level, source, position, message)
                 << utils::io::endl;
     });
-     */
 
     if (mOptimization == MaterialBuilder::Optimization::SIZE) {
         // registerSizePasses(optimizer);
@@ -268,12 +262,10 @@ void GLSLPostProcessor::fullOptimization(const TShader& tShader,
         // registerPerformancePasses(optimizer);
     }
 
-    /*
     if (!optimizer.Run(spirv.data(), spirv.size(), &spirv)) {
         utils::slog.e << "SPIR-V optimizer pass failed" << utils::io::endl;
         return;
     }
-     */
 
     // Remove dead module-level objects: functions, types, vars
     spv::spirvbin_t remapper(0);
@@ -302,7 +294,6 @@ void GLSLPostProcessor::fullOptimization(const TShader& tShader,
     }
 }
 
-/*
 void GLSLPostProcessor::registerPerformancePasses(Optimizer& optimizer) const {
     optimizer
             .RegisterPass(CreateMergeReturnPass())
@@ -366,6 +357,7 @@ void GLSLPostProcessor::registerSizePasses(Optimizer& optimizer) const {
             .RegisterPass(CreateCFGCleanupPass())
             .RegisterPass(CreateAggressiveDCEPass());
 }
- */
 
 } // namespace filamat
+
+*/

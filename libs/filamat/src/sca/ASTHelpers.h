@@ -17,10 +17,12 @@
 #ifndef TNT_SCAHELPERS_H_H
 #define TNT_SCAHELPERS_H_H
 
+/*
+
 #include <deque>
 #include <string>
 #include <vector>
-#include <intermediate.h>
+// #include <intermediate.h>
 
 #include "GLSLTools.h"
 
@@ -73,3 +75,4 @@ void getFunctionParameters(glslang::TIntermAggregate* func, std::vector<Function
 
 } // namespace ASTutils
 #endif //TNT_SCAHELPERS_H_H
+ */

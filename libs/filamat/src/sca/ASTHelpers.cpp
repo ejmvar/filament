@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
+
+/*
 #include "ASTHelpers.h"
 
 #include "GLSLTools.h"
 
-#include <intermediate.h>
-#include <localintermediate.h>
+// #include <intermediate.h>
+// #include <localintermediate.h>
 
 #include <utils/Log.h>
 
@@ -359,3 +361,4 @@ void getFunctionParameters(TIntermAggregate* func, std::vector<FunctionParameter
 }
 
 } // namespace ASTHelpers
+ */

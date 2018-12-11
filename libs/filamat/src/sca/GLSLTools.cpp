@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+/*
 #include "GLSLTools.h"
 
 #include <cstring>
@@ -319,3 +320,4 @@ void GLSLTools::prepareShaderParser(glslang::TShader& shader, EShLanguage langua
 }
 
 } // namespace filamat
+ */
