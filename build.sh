@@ -377,6 +377,28 @@ function build_android {
     fi
 
     cd ../..
+
+    cd libs/filamat/java
+
+    if [ "$ISSUE_DEBUG_BUILD" == "true" ]; then
+        ./gradlew -Pfilament_dist_dir=../../../out/android-debug/filament assembleDebug
+
+        if [ "$INSTALL_COMMAND" ]; then
+            echo "Installing out/filamat-android-debug.aar..."
+            cp build/outputs/aar/java-debug.aar ../../../out/filamat-android-debug.aar
+        fi
+    fi
+
+    if [ "$ISSUE_RELEASE_BUILD" == "true" ]; then
+        ./gradlew -Pfilament_dist_dir=../../../out/android-release/filament assembleRelease
+
+        if [ "$INSTALL_COMMAND" ]; then
+            echo "Installing out/filamat-android-release.aar..."
+            cp build/outputs/aar/java-release.aar ../../../out/filamat-android-release.aar
+        fi
+    fi
+
+    cd ../../..
 }
 
 function ensure_ios_toolchain {
