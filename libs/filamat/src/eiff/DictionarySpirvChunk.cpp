@@ -16,7 +16,7 @@
 
 #include "DictionarySpirvChunk.h"
 
-#include <smolv.h>
+// #include <smolv.h>
 
 namespace filamat {
 
@@ -33,13 +33,15 @@ void DictionarySpirvChunk::flatten(Flattener& f) {
     for (size_t i = 0 ; i < mDictionary.getBlobCount() ; i++) {
         const std::string& spirv = mDictionary.getBlob(i);
 
-        smolv::ByteArray compressed;
-        const uint32_t flags = smolv::kEncodeFlagStripDebugInfo;
+        // smolv::ByteArray compressed;
+        // const uint32_t flags = smolv::kEncodeFlagStripDebugInfo;
+        /*
         if (!smolv::Encode(spirv.data(), spirv.size(), compressed, flags)) {
             utils::slog.e << "Error with SPIRV compression" << utils::io::endl;
         }
 
         f.writeBlob((const char*) compressed.data(), compressed.size());
+         */
     }
 }
 
