@@ -45,6 +45,28 @@ set(SHADERS
         src/variables.fs
         src/variables.vs)
 
+set(MINIFIED_DIR ${CMAKE_CURRENT_BINARY_DIR}/minified)
+
+file(MAKE_DIRECTORY ${MINIFIED_DIR})
+
+# After the foreach loop, SHADERS_MIN will contain the paths to the minified shaders.
+set(SHADERS_MIN)
+foreach(SHADER_FILE ${SHADERS})
+    get_filename_component(SHADER_NAME ${SHADER_FILE} NAME)
+    set(SHADER_RAW ${CMAKE_CURRENT_SOURCE_DIR}/${SHADER_FILE})
+    set(SHADER_MIN ${MINIFIED_DIR}/${SHADER_NAME})
+    # For Debug builds, pass the "-Onone" flag to perform no minification. This is helpful for
+    # debugging shaders.
+    add_custom_command(
+        OUTPUT ${SHADER_MIN}
+        COMMAND glslminifier "$<$<CONFIG:DEBUG>:-Onone>" -o ${SHADER_MIN} ${SHADER_RAW}
+        DEPENDS glslminifier ${SHADER_RAW}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        COMMENT "Minifying shader ${SHADER_NAME}"
+    )
+    list(APPEND SHADERS_MIN ${SHADER_MIN})
+endforeach()
+
 # ==================================================================================================
 # Code generation
 # ==================================================================================================
@@ -54,9 +76,9 @@ get_resgen_vars(${RESOURCE_DIR} shaders)
 
 add_custom_command(
         OUTPUT ${RESGEN_OUTPUTS}
-        COMMAND resgen --text --keep ${RESGEN_FLAGS} ${SHADERS}
-        DEPENDS resgen ${SHADERS}
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        COMMAND resgen --text --keep ${RESGEN_FLAGS} ${SHADERS_MIN}
+        DEPENDS resgen ${SHADERS_MIN}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         COMMENT "Aggregating shaders"
 )
 
@@ -64,15 +86,10 @@ if (DEFINED RESGEN_SOURCE_FLAGS)
     set_source_files_properties(${RESGEN_SOURCE} PROPERTIES COMPILE_FLAGS ${RESGEN_SOURCE_FLAGS})
 endif()
 
-# WIN32 seems to require at least one C file, so create an empty one.
-set(DUMMY_SRC "${RESOURCE_DIR}/dummy.c")
-add_custom_command(OUTPUT ${DUMMY_SRC}
-        COMMAND echo "//" > ${DUMMY_SRC})
-
 # ==================================================================================================
 # Include and target definitions
 # ==================================================================================================
-add_library(${TARGET} STATIC ${DUMMY_SRC} ${RESGEN_SOURCE})
+add_library(${TARGET} STATIC ${RESGEN_SOURCE})
 target_include_directories(${TARGET} PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
 
 install(TARGETS ${TARGET} ARCHIVE DESTINATION lib/${DIST_DIR})

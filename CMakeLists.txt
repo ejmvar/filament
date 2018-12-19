@@ -159,7 +159,7 @@ endif()
 # On Android RELEASE builds, we disable exceptions and RTTI to save some space (about 75 KiB
 # saved by -fno-exception and 10 KiB saved by -fno-rtti).
 if (ANDROID OR WEBGL)
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fno-exceptions -fno-rtti")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fno-exceptions -fno-unwind-tables -fno-asynchronous-unwind-tables -fno-rtti")
 endif()
 
 # ==================================================================================================
@@ -169,6 +169,10 @@ endif()
 #  -fsanitize=undefined causes extremely long link times
 #  -fsanitize=address causes a crash with assimp, which we can't explain for now
 #set(EXTRA_SANITIZE_OPTIONS "-fsanitize=undefined -fsanitize=address")
+# clang-cl.exe on Windows does not support -fstack-protector.
+if (NOT CLANG_CL)
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fstack-protector")
+endif()
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ${EXTRA_SANITIZE_OPTIONS}")
 
 # ==================================================================================================
@@ -287,19 +291,18 @@ function(get_resgen_vars ARCHIVE_DIR ARCHIVE_NAME)
         ${ARCHIVE_DIR}/${ARCHIVE_NAME}.apple.S
         ${ARCHIVE_DIR}/${ARCHIVE_NAME}.h
     )
-    if (NOT WIN32)
-        set(ASM_ARCH_FLAG "-arch ${DIST_ARCH}")
-    endif()
+    set(ASM_ARCH_FLAG "-arch ${DIST_ARCH}")
     if (APPLE)
         set(ASM_SUFFIX ".apple")
     endif()
-    if (WEBGL)
-        set(RESGEN_HEADER "${ARCHIVE_DIR}/${ARCHIVE_NAME}.h" PARENT_SCOPE)
+    set(RESGEN_HEADER "${ARCHIVE_DIR}/${ARCHIVE_NAME}.h" PARENT_SCOPE)
+    # Visual Studio makes it difficult to use assembly without using MASM. MASM doesn't support
+    # the equivalent of .incbin, so on Windows we'll just tell resgen to output a C file.
+    if (WEBGL OR WIN32)
         set(RESGEN_OUTPUTS "${OUTPUTS};${ARCHIVE_DIR}/${ARCHIVE_NAME}.c" PARENT_SCOPE)
         set(RESGEN_FLAGS -cx ${ARCHIVE_DIR} -p ${ARCHIVE_NAME} PARENT_SCOPE)
         set(RESGEN_SOURCE "${ARCHIVE_DIR}/${ARCHIVE_NAME}.c" PARENT_SCOPE)
     else()
-        set(RESGEN_HEADER "${ARCHIVE_DIR}/${ARCHIVE_NAME}.h" PARENT_SCOPE)
         set(RESGEN_OUTPUTS "${OUTPUTS}" PARENT_SCOPE)
         set(RESGEN_FLAGS -x ${ARCHIVE_DIR} -p ${ARCHIVE_NAME} PARENT_SCOPE)
         set(RESGEN_SOURCE "${ARCHIVE_DIR}/${ARCHIVE_NAME}${ASM_SUFFIX}.S" PARENT_SCOPE)
@@ -310,12 +313,6 @@ endfunction()
 # ==================================================================================================
 # Sub-projects
 # ==================================================================================================
-# spirv-tools must come before filamat, as filamat relies on the presence of the
-# spirv-tools_SOURCE_DIR variable.
-add_subdirectory(${EXTERNAL}/spirv-tools)
-add_subdirectory(${EXTERNAL}/glslang/tnt)
-add_subdirectory(${EXTERNAL}/spirv-cross/tnt)
-
 # Common to all platforms
 add_subdirectory(${EXTERNAL}/libgtest/tnt)
 add_subdirectory(${LIBRARIES}/filabridge)
@@ -354,13 +351,20 @@ if (WEBGL)
 endif()
 
 if (NOT ANDROID AND NOT WEBGL AND NOT IOS)
-    add_subdirectory(${FILAMENT}/samples)
+    # spirv-tools must come before filamat, as filamat relies on the presence of the
+    # spirv-tools_SOURCE_DIR variable.
+    add_subdirectory(${EXTERNAL}/spirv-tools)
+    add_subdirectory(${EXTERNAL}/glslang/tnt)
+    add_subdirectory(${EXTERNAL}/spirv-cross/tnt)
 
     add_subdirectory(${LIBRARIES}/bluegl)
     add_subdirectory(${LIBRARIES}/filagui)
+    add_subdirectory(${LIBRARIES}/filamat)
     add_subdirectory(${LIBRARIES}/imageio)
 
     add_subdirectory(${FILAMENT}/java)
+    add_subdirectory(${FILAMENT}/samples)
+
     add_subdirectory(${EXTERNAL}/astcenc/tnt)
     add_subdirectory(${EXTERNAL}/etc2comp)
     add_subdirectory(${EXTERNAL}/getopt)
@@ -375,6 +379,7 @@ if (NOT ANDROID AND NOT WEBGL AND NOT IOS)
 
     add_subdirectory(${TOOLS}/cmgen)
     add_subdirectory(${TOOLS}/filamesh)
+    add_subdirectory(${TOOLS}/glslminifier)
     add_subdirectory(${TOOLS}/matc)
     add_subdirectory(${TOOLS}/matinfo)
     add_subdirectory(${TOOLS}/mipgen)

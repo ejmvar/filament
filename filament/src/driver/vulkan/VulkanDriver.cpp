@@ -527,7 +527,6 @@ void VulkanDriver::updateIndexBuffer(Driver::IndexBufferHandle ibh, BufferDescri
 void VulkanDriver::update2DImage(Driver::TextureHandle th,
         uint32_t level, uint32_t xoffset, uint32_t yoffset, uint32_t width, uint32_t height,
         PixelBufferDescriptor&& data) {
-    assert(data.type != driver::PixelDataType::COMPRESSED && "Compression not yet supported.");
     assert(xoffset == 0 && yoffset == 0 && "Offsets not yet supported.");
     handle_cast<VulkanTexture>(mHandleMap, th)->update2DImage(data, width, height, level);
     scheduleDestroy(std::move(data));
@@ -535,7 +534,6 @@ void VulkanDriver::update2DImage(Driver::TextureHandle th,
 
 void VulkanDriver::updateCubeImage(Driver::TextureHandle th, uint32_t level,
         PixelBufferDescriptor&& data, FaceOffsets faceOffsets) {
-    assert(data.type != driver::PixelDataType::COMPRESSED && "Compression not yet supported.");
     handle_cast<VulkanTexture>(mHandleMap, th)->updateCubeImage(data, faceOffsets, level);
     scheduleDestroy(std::move(data));
 }
@@ -950,7 +948,7 @@ void VulkanDriver::debugCommand(const char* methodName) {
     static const utils::StaticString BEGIN_COMMAND = "beginRenderPass";
     static const utils::StaticString END_COMMAND = "endRenderPass";
     static bool inRenderPass = false;
-    const utils::StaticString command(methodName, strlen(methodName));
+    const utils::StaticString command = utils::StaticString::make(methodName, strlen(methodName));
     if (command == BEGIN_COMMAND) {
         assert(!inRenderPass);
         inRenderPass = true;

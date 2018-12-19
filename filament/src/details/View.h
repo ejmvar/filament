@@ -62,7 +62,7 @@ public:
     void terminate(FEngine& engine);
 
     void prepare(FEngine& engine, driver::DriverApi& driver, ArenaScope& arena,
-            Viewport const& viewport) noexcept;
+            Viewport const& viewport, math::float4 const& userTime) noexcept;
 
     void setScene(FScene* scene) { mScene = scene; }
     FScene const* getScene() const noexcept { return mScene; }
@@ -130,17 +130,9 @@ public:
     bool hasDynamicLighting() const noexcept { return mHasDynamicLighting; }
     bool hasShadowing() const noexcept { return mHasShadowing & mDirectionalShadowMap.hasVisibleShadows(); }
 
-    void prepareVisibleRenderables(utils::JobSystem& js, FScene::RenderableSoa& renderableData) const noexcept;
-
-    void prepareVisibleShadowCasters(utils::JobSystem& js, FScene::RenderableSoa& renderableData,
-                                     Frustum const& lightFrustum) const noexcept;
-
     void updatePrimitivesLod(
             FEngine& engine, const CameraInfo& camera,
             FScene::RenderableSoa& renderableData, Range visible) noexcept;
-
-    static void cullRenderables(utils::JobSystem& js, FScene::RenderableSoa& renderableData,
-                                Frustum const& frustum, size_t bit) noexcept;
 
     void setShadowsEnabled(bool enabled) noexcept { mShadowingEnabled = enabled; }
 
@@ -228,8 +220,18 @@ public:
 private:
     static constexpr size_t MAX_FRAMETIME_HISTORY = 32u;
 
-    void prepareVisibleLights(
-            FLightManager& lcm, utils::JobSystem& js, FScene::LightSoa& lightData) const;
+    void prepareVisibleRenderables(utils::JobSystem& js,
+            Frustum const& frustum, FScene::RenderableSoa& renderableData) const noexcept;
+
+    static void prepareVisibleShadowCasters(utils::JobSystem& js,
+            Frustum const& lightFrustum, FScene::RenderableSoa& renderableData) noexcept;
+
+    static void prepareVisibleLights(
+            FLightManager const& lcm, utils::JobSystem& js, Frustum const& frustum,
+            FScene::LightSoa& lightData) noexcept;
+
+    static void cullRenderables(utils::JobSystem& js,
+            FScene::RenderableSoa& renderableData, Frustum const& frustum, size_t bit) noexcept;
 
     void computeVisibilityMasks(
             uint8_t visibleLayers, uint8_t const* layers,

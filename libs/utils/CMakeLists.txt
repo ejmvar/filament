@@ -17,6 +17,7 @@ set(DIST_HDRS
         ${PUBLIC_HDR_DIR}/${TARGET}/EntityInstance.h
         ${PUBLIC_HDR_DIR}/${TARGET}/EntityManager.h
         ${PUBLIC_HDR_DIR}/${TARGET}/CString.h
+        ${PUBLIC_HDR_DIR}/${TARGET}/unwindows.h
 )
 
 set(SRCS
@@ -130,6 +131,7 @@ set(BENCHMARK_SRCS
         benchmark/benchmark_allocators.cpp
         benchmark/benchmark_binary_search.cpp
         benchmark/benchmark_calls.cpp
+        benchmark/benchmark_JobSystem.cpp
         benchmark/benchmark_mutex.cpp
         benchmark/benchmark_memcpy.cpp)
 
