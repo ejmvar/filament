@@ -359,7 +359,6 @@ if (NOT ANDROID AND NOT WEBGL AND NOT IOS)
 
     add_subdirectory(${LIBRARIES}/bluegl)
     add_subdirectory(${LIBRARIES}/filagui)
-    add_subdirectory(${LIBRARIES}/filamat)
     add_subdirectory(${LIBRARIES}/imageio)
 
     add_subdirectory(${FILAMENT}/java)
@@ -392,5 +391,5 @@ endif()
 
 # Generate exported executables for cross-compiled builds (Android, WebGL, and iOS)
 if (NOT CMAKE_CROSSCOMPILING)
-    export(TARGETS matc cmgen filamesh mipgen resgen FILE ${IMPORT_EXECUTABLES})
+    export(TARGETS matc cmgen filamesh mipgen resgen glslminifier FILE ${IMPORT_EXECUTABLES})
 endif()
