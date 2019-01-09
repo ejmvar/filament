@@ -98,7 +98,7 @@ static int handleArguments(int argc, char* argv[]) {
                 g_writeToStdOut = false;
                 break;
             case 'O':
-                if (strcasecmp(optarg, "none") == 0) {
+                if (arg == "none") {
                     g_optimizationLevel = GlslMinifyOptions::NONE;
                 } else {
                     std::cerr << "Warning: unknown optimization level." << std::endl;
