@@ -98,9 +98,6 @@ target_compile_options(${TARGET} PRIVATE
 # ==================================================================================================
 # Tests
 # ==================================================================================================
-if (ANDROID)
-    return()
-endif()
 project(test_filamat)
 set(TARGET test_filamat)
 set(SRCS
