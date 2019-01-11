@@ -47,11 +47,12 @@ elseif (ANDROID)
     set(EXPORTED_SYMBOLS "-Wl,--version-script=${CMAKE_CURRENT_SOURCE_DIR}/libfilamat-jni.map")
 endif()
 
-# This is necessary to avoid a XXX error due to Android's toolchain.
+# This is necessary to avoid a CMake error due to setting RPATH on non-elf platforms.
 # Setting this also causes CMake to issue a warning:
-# "Policy CMP0068 is not set: RPATH settings on macOS do not affect"
-# which can be safely ignored.
+# "Policy CMP0068 is not set: RPATH settings on macOS do not affect install_name." which can be
+# safely ignored.
 set(CMAKE_SKIP_RPATH TRUE)
+
 set_target_properties(${TARGET} PROPERTIES
         CXX_STANDARD 14
         COMPILE_FLAGS "-fno-exceptions -fvisibility=hidden"
