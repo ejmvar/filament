@@ -295,25 +295,22 @@ void MaterialBuilder::prepareToBuild(MaterialInfo& info) noexcept {
 bool MaterialBuilder::runStaticCodeAnalysis() noexcept {
     using namespace filament::driver;
 
-    // GLSLTools glslTools;
+    GLSLTools glslTools;
 
     // Populate mProperties with the properties set in the shader.
-    /*
     if (!glslTools.findProperties(*this, mProperties, mTargetApi)) {
         return false;
     }
-     */
 
     // At this point the shader is syntactically correct. Perform semantic analysis now.
     ShaderModel model;
 
     std::string shaderCode = peek(ShaderType::VERTEX, model, mProperties);
-    bool result = true;
-    // bool result = glslTools.analyzeVertexShader(shaderCode, model, mTargetApi);
+    bool result = glslTools.analyzeVertexShader(shaderCode, model, mTargetApi);
     if (!result) return result;
 
     shaderCode = peek(ShaderType::FRAGMENT, model, mProperties);
-    // result = glslTools.analyzeFragmentShader(shaderCode, model, mTargetApi);
+    result = glslTools.analyzeFragmentShader(shaderCode, model, mTargetApi);
     return result;
 }
 
@@ -334,7 +331,7 @@ static void showErrorMessage(const char* materialName, uint8_t variant,
 }
 
 Package MaterialBuilder::build() noexcept {
-    // GLSLTools::init();
+    GLSLTools::init();
 
     if (!runStaticCodeAnalysis()) {
         // Return an empty package to signal a failure to build the material.
@@ -349,7 +346,7 @@ Package MaterialBuilder::build() noexcept {
     prepareToBuild(info);
 
     // Create a postprocessor to optimize / compile to Spir-V if necessary.
-    // GLSLPostProcessor postProcessor(mOptimization, mPrintShaders);
+    GLSLPostProcessor postProcessor(mOptimization, mPrintShaders);
 
     // Create chunk tree.
     ChunkContainer container;
@@ -484,11 +481,8 @@ Package MaterialBuilder::build() noexcept {
                         shaderModel, targetApi, codeGenTargetApi, info, k,
                         mInterpolation, mVertexDomain);
 
-                /*
                 bool ok = postProcessor.process(vs, filament::driver::ShaderType::VERTEX,
                         shaderModel, &vs, pSpirv);
-                        */
-                bool ok = true;
                 if (!ok) {
                     showErrorMessage(mMaterialName.c_str_safe(), k, targetApi,
                             filament::driver::ShaderType::VERTEX, vs);
@@ -523,11 +517,8 @@ Package MaterialBuilder::build() noexcept {
                 std::string fs = sg.createFragmentProgram(
                         shaderModel, targetApi, codeGenTargetApi, info, k, mInterpolation);
 
-                /*
                 bool ok = postProcessor.process(fs, filament::driver::ShaderType::FRAGMENT,
                         shaderModel, &fs, pSpirv);
-                        */
-                bool ok = true;
                 if (!ok) {
                     showErrorMessage(mMaterialName.c_str_safe(), k, targetApi,
                             filament::driver::ShaderType::FRAGMENT, fs);

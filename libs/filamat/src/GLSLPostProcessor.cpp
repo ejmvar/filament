@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-/*
-
 #include "GLSLPostProcessor.h"
 
 #include <sstream>
@@ -94,6 +92,12 @@ static std::string stringifySpvOptimizerMessage(spv_message_level_t level, const
     return oss.str();
 }
 
+/**
+ * Shrinks the specified string and returns a new string as the result.
+ * To shrink the string, this method performs the following transforms:
+ * - Remove leading white spaces at the beginning of each line
+ * - Remove empty lines
+ */
 static std::string shrinkString(const std::string& s) {
     size_t cur = 0;
 
@@ -257,9 +261,9 @@ void GLSLPostProcessor::fullOptimization(const TShader& tShader,
     });
 
     if (mOptimization == MaterialBuilder::Optimization::SIZE) {
-        // registerSizePasses(optimizer);
+        registerSizePasses(optimizer);
     } else if (mOptimization == MaterialBuilder::Optimization::PERFORMANCE) {
-        // registerPerformancePasses(optimizer);
+        registerPerformancePasses(optimizer);
     }
 
     if (!optimizer.Run(spirv.data(), spirv.size(), &spirv)) {
@@ -359,5 +363,3 @@ void GLSLPostProcessor::registerSizePasses(Optimizer& optimizer) const {
 }
 
 } // namespace filamat
-
-*/

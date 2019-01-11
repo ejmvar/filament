@@ -37,11 +37,11 @@ using namespace filament::driver;
 namespace filamat {
 
 Package PostprocessMaterialBuilder::build() {
-    // GLSLTools::init();
+    GLSLTools::init();
     prepare();
 
     // Create a postprocessor to optimize / compile to Spir-V if necessary.
-    // GLSLPostProcessor postProcessor(mOptimization, mPrintShaders);
+    GLSLPostProcessor postProcessor(mOptimization, mPrintShaders);
 
     // Create chunk tree.
     ChunkContainer container;
@@ -87,11 +87,8 @@ Package PostprocessMaterialBuilder::build() {
                     shaderModel, targetApi, codeGenTargetApi,
                     filament::PostProcessStage(k), firstSampler);
 
-            /*
             bool ok = postProcessor.process(vs, filament::driver::ShaderType::VERTEX, shaderModel,
                     &vs, pSpirv);
-                    */
-            bool ok = true;
             if (!ok) {
                 // An error occured while postProcessing, aborting.
                 errorOccured = true;
@@ -119,11 +116,8 @@ Package PostprocessMaterialBuilder::build() {
                     shaderModel, targetApi, codeGenTargetApi,
                     filament::PostProcessStage(k), firstSampler);
 
-            /*
             ok = postProcessor.process(fs, filament::driver::ShaderType::FRAGMENT, shaderModel, &fs,
                     pSpirv);
-                    */
-            ok = true;
             if (!ok) {
                 // An error occured while postProcessing, aborting.
                 errorOccured = true;
