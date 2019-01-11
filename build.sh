@@ -382,7 +382,7 @@ function build_android {
     cd libs/filamat/java
 
     if [ "$ISSUE_DEBUG_BUILD" == "true" ]; then
-        ./gradlew -Pfilament_dist_dir=../../../out/android-debug/filament assembleDebug
+        ./gradlew -Pfilamat_dist_dir=../../../out/android-debug/filamat assembleDebug
 
         if [ "$INSTALL_COMMAND" ]; then
             echo "Installing out/filamat-android-debug.aar..."
@@ -391,7 +391,7 @@ function build_android {
     fi
 
     if [ "$ISSUE_RELEASE_BUILD" == "true" ]; then
-        ./gradlew -Pfilament_dist_dir=../../../out/android-release/filament assembleRelease
+        ./gradlew -Pfilamat_dist_dir=../../../out/android-release/filamat assembleRelease
 
         if [ "$INSTALL_COMMAND" ]; then
             echo "Installing out/filamat-android-release.aar..."

@@ -29,9 +29,9 @@ version = "0.1"
 
 apply plugin: 'com.android.library'
 
-def filament_path = file("../../../out/android-release/filament").absolutePath
-if (project.hasProperty("filament_dist_dir")) {
-    filament_path = file("$filament_dist_dir").absolutePath
+def filamat_path = file("../../../out/android-release/filament/filamat").absolutePath
+if (project.hasProperty("filamat_dist_dir")) {
+    filamat_path = file("$filamat_dist_dir").absolutePath
 }
 
 android {
@@ -54,7 +54,7 @@ android {
 
     sourceSets {
         main {
-            jniLibs.srcDirs "${filament_path}/filamat/lib"
+            jniLibs.srcDirs "${filamat_path}/lib"
         }
     }
 

@@ -59,7 +59,14 @@ set_target_properties(${TARGET} PROPERTIES
 
 target_link_libraries(${TARGET} filamat)
 
-install(TARGETS ${TARGET} LIBRARY DESTINATION filamat/lib/${DIST_DIR})
+# We need a way to detect if we're building via build.sh
+SET(INSTALL_FILAMAT_ALONGSIDE_FILAMENT FALSE CACHE BOOL "Install filamat libraries alongside filament, as opposed to inside of")
+message(STATUS ${INSTALL_FILAMAT_ALONGSIDE_FILAMENT})
+if (INSTALL_FILAMAT_ALONGSIDE_FILAMENT)
+    install(TARGETS ${TARGET} LIBRARY DESTINATION ../filamat/lib/${DIST_DIR})
+else()
+    install(TARGETS ${TARGET} LIBRARY DESTINATION filamat/lib/${DIST_DIR})
+endif()
 
 # ==================================================================================================
 # Java APIs
