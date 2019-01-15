@@ -38,8 +38,6 @@ add_library(${TARGET} SHARED ${JNI_SOURCE_FILES})
 
 target_include_directories(${TARGET} PRIVATE ${JNI_INCLUDE_DIRS})
 
-# set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fvisibility=hidden")
-
 set(EXPORTED_SYMBOLS)
 if (APPLE)
     set(EXPORTED_SYMBOLS "-exported_symbols_list ${CMAKE_CURRENT_SOURCE_DIR}/libfilamat-jni.symbols")
