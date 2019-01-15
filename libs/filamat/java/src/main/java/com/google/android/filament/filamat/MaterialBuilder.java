@@ -99,8 +99,6 @@ public class MaterialBuilder {
     @NonNull
     public MaterialPackage build() {
         long nativePackage = nBuilderBuild(mNativeObject);
-        // todo: is it even possible to return 0?
-        if (nativePackage == 0) throw new IllegalStateException("Couldn't build Material");
         byte[] data = nGetPackageBytes(nativePackage);
         MaterialPackage result =
                 new MaterialPackage(ByteBuffer.wrap(data), nGetPackageIsValid(nativePackage));
