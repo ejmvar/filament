@@ -48,7 +48,7 @@ elseif (ANDROID)
 endif()
 
 # This is necessary to avoid a CMake error due to setting RPATH on non-elf platforms.
-# Setting this also causes CMake to issue a warning:
+# Setting this also causes CMake to issue a warning on Mac:
 # "Policy CMP0068 is not set: RPATH settings on macOS do not affect install_name." which can be
 # safely ignored.
 set(CMAKE_SKIP_RPATH TRUE)
@@ -60,14 +60,7 @@ set_target_properties(${TARGET} PROPERTIES
 
 target_link_libraries(${TARGET} filamat)
 
-# We need a way to detect if we're building via build.sh
-SET(INSTALL_FILAMAT_ALONGSIDE_FILAMENT FALSE CACHE BOOL "Install filamat libraries alongside filament, as opposed to inside of")
-message(STATUS ${INSTALL_FILAMAT_ALONGSIDE_FILAMENT})
-if (INSTALL_FILAMAT_ALONGSIDE_FILAMENT)
-    install(TARGETS ${TARGET} LIBRARY DESTINATION ../filamat/lib/${DIST_DIR})
-else()
-    install(TARGETS ${TARGET} LIBRARY DESTINATION filamat/lib/${DIST_DIR})
-endif()
+install(TARGETS ${TARGET} LIBRARY DESTINATION lib/${DIST_DIR})
 
 # ==================================================================================================
 # Java APIs
