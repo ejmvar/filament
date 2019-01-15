@@ -59,6 +59,7 @@ set_target_properties(${TARGET} PROPERTIES
 target_link_libraries(${TARGET} filamat)
 
 install(TARGETS ${TARGET} LIBRARY DESTINATION lib/${DIST_DIR})
+install(CODE "execute_process(COMMAND ${CMAKE_STRIP} -x ${CMAKE_INSTALL_PREFIX}/lib/${DIST_DIR}/lib${TARGET}${CMAKE_SHARED_LIBRARY_SUFFIX})")
 
 # ==================================================================================================
 # Java APIs
