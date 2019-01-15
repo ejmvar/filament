@@ -91,5 +91,3 @@ endif()
 # ==================================================================================================
 add_library(${TARGET} STATIC ${RESGEN_SOURCE})
 target_include_directories(${TARGET} PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
-
-install(TARGETS ${TARGET} ARCHIVE DESTINATION lib/${DIST_DIR})

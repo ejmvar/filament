@@ -65,7 +65,6 @@ macro(spirv_cross_add_library name config_name)
   target_compile_options(${name} PRIVATE ${spirv-compiler-options})
   target_compile_definitions(${name} PRIVATE ${spirv-compiler-defines})
   target_compile_definitions(${name} PUBLIC ${spirv-compiler-public-defines})
-  install(TARGETS ${name} ARCHIVE DESTINATION lib/${DIST_DIR})
 endmacro()
 
 spirv_cross_add_library(spirv-cross-core spirv_cross_core STATIC
